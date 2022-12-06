@@ -20,6 +20,7 @@ class Depot:
         self.y = y
         self.z = z
 
+
 class Customer:
     def __init__(self, D, x, y, z):
         """ Constructor of the Customer class
@@ -35,6 +36,7 @@ class Customer:
         self.x = x
         self.y = y
         self.z = z
+
 
 class Truck:
     def __init__(self, F, Q, m, F_wind, F_internal, E):
