@@ -74,6 +74,30 @@ def generatesInputTrucks(nb_trucks : int):
     return customers
 
 
+def generateCostsBetweenNodes(depos, customers):
+    """ Generates a matrix of costs from node i to node j
+        The model is based on the amount of fuel needed to go from Node i to Node j, plus some gaussian noise (road tolls etc)
+
+    Args:
+        depos (list of Depos): list containing Depos objects
+        customers (list of Customers): list containing Customer objects
+    """
+
+    def computeDistance(node1, node2):
+        return np.sqrt((node1.x - node2.x)**2 + (node1.y - node2.y)**2)
+
+    costs = np.zeros((len(depos) + len(customers), len(depos) + len(customers)))
+    nodes = [*depos, *customers]
+
+
+    for idx_i, node_i in enumerate(nodes):
+        for idx_j, node_j in enumerate(nodes):
+            costs[idx_i, idx_j] = computeDistance(node_i, node_j) # add here some gaussian noise or smth
+
+    return costs
+
+
+
 def generateInput(nb_depots : int, nb_customers : int, nb_trucks : int):
     """ creates the classes and generates data for their attributes
 
@@ -93,5 +117,7 @@ def generateInput(nb_depots : int, nb_customers : int, nb_trucks : int):
 
 
 if __name__ == "__main__":
-    stuff = generateInput(10, 5, 10)
+    stuff = generateInput(2, 5, 10)
+    costs = generateCostsBetweenNodes(depos = stuff[0], customers = stuff[1])
+    print(costs)
     print("done")
