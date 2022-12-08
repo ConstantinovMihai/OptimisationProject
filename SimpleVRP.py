@@ -2,9 +2,10 @@ from gurobipy import Model, quicksum, GRB
 from numpy import *
 from openpyxl import *
 from time import *
-from generate_input import generateInput
+from generate_input import generateInput, generateCostsBetweenNodes
 
-def VRP_Problem (depots, customers, trucks, nodes):
+
+def VRP_Problem (depots, customers, trucks, nodes, costs):
     
     model = Model("VRP")                # LP model (this is an object)
     
@@ -63,7 +64,7 @@ def VRP_Problem (depots, customers, trucks, nodes):
     flow_balance = {} # 18 flow balance for node j  in terms of incoming and outgoing flows and demand at node j
     for node_j in customers:
         flow_balance[node_j.id] = model.addConstr(quicksum(t[node_i.id,node_j.id] for node_i in nodes if node_i.id != node_j.id),'=',
-                                                  quicksum(t[node_j.id,node_k.id] for node_k in nodes if node_k.id != node_j.id)+node_j.demand)
+                                                  quicksum(t[node_j.id,node_k.id] for node_k in nodes if node_k.id != node_j.id)+node_j.demand,name=f"flow_balance{node_j.id}")
 
     cycle_prevention = {} # 19 number of active arcs needed to connect all customer nodes assured that the routes are radials and do not have cycles
     cycle_prevention[0] = model.addConstr(quicksum(quicksum(x[node_i.id,node_j.id] for node_i in nodes) for node_j in nodes), '=', len(customers), name="cycle_prevention")
@@ -75,7 +76,7 @@ def VRP_Problem (depots, customers, trucks, nodes):
     vehicle_capacity = {} # 21 limits flow routes according to the capacity of the vehicles
     for node_i in nodes:
         for node_j in nodes:
-            vehicle_capacity[node_i.id,node_j.id] = model.addConstr(t[node_i.id,node_j.id],'<=', trucks.Q*x[node_i.id,node_j.id], name=f"veh_cap{node_i.id}{node_j.id}")
+            vehicle_capacity[node_i.id,node_j.id] = model.addConstr(t[node_i.id,node_j.id],'<=', trucks[0].Q*x[node_i.id,node_j.id], name=f"veh_cap{node_i.id}{node_j.id}")
 
     depot_activation = {} # 22 limits flows leaving a deposit according to the ability and decision to build the facility
     for node_i in depots:
@@ -94,7 +95,7 @@ def VRP_Problem (depots, customers, trucks, nodes):
     for node_i in depots:
         for node_j in nodes:
             for node_u in nodes:
-                arcs1[node_i.id, node_j.id, node_u.id] = model.addConstr(-(1-x[node_j.id,node_u.id]-x[node_u.id,node_j.id]),"<=",f[node_j.id,node_j.id]-f[node_i.id,node_u.id], name = f"arcs1{node_i.id}{node_j.id}{node_u.id}")
+                arcs1[node_i.id, node_j.id, node_u.id] = model.addConstr(-(1-x[node_j.id,node_u.id]-x[node_u.id,node_j.id]),"<=",f[node_i.id,node_j.id]-f[node_i.id,node_u.id], name = f"arcs1{node_i.id}{node_j.id}{node_u.id}")
 
     arcs2 = {} # 26 ensure that the active arcs are connected to the same facility to form the route
     for node_i in depots:
@@ -107,17 +108,27 @@ def VRP_Problem (depots, customers, trucks, nodes):
         for node_j in customers:
             depot_con[node_i.id,node_j.id] = model.addConstr(f[node_i.id,node_j.id],'>=',x[node_i.id,node_j.id],name=f"depot_con{node_i.id}{node_j.id}")
 
+
+    # HCECKKC of this is RIGHTSTSTTSTS
     min_depots = {} # 28 lower limit to the number of deposits that must be constructed according to the sum of the demands and the capacity of the facility
     for node_i in depots:
-        min_depots[node_i.id] = model.addConstr(quicksum(y[node_i.id] for node_i in depots),">=",quicksum(node_j.demand for node_j in customers)/quicksum(node_i.cap for node_i in depots),name=f'min_depots{node_i.id}')
+        min_depots[node_i.id] = model.addConstr(quicksum(y[node_i.id] for node_i in depots),">=",quicksum(node_j.demand for node_j in customers)/node_i.cap,name=f'min_depots{node_i.id}')
 
     depot_route_cap = {} # 29 number of routes that can leave a deposit is restricted according with the facility capacity and vehicle capacity
     for node_i in depots:    
-        depot_route_cap[node_i.id] = model.addConstr(quicksum(x[node_i.id,node_j.id] for node_j in customers),'<=',node_i.cap/trucks.Q, name=f"depot_route_cap{node_i.id}")
+        depot_route_cap[node_i.id] = model.addConstr(quicksum(x[node_i.id,node_j.id] for node_j in customers),'<=',node_i.cap/trucks[0].Q, name=f"depot_route_cap{node_i.id}")
 
     cient_dem = {} # 30 number of routes is sufficient to attend all clients demand
-    cient_dem[0] = model.addConstr(quicksum(quicksum(x[node_i.id,node_j.id] for node_i in depots) for node_j in customers),'>=',quicksum(node_j.demand/trucks.Q for node_j in customers),name=f'cient_dem')
+    cient_dem[0] = model.addConstr(quicksum(quicksum(x[node_i.id,node_j.id] for node_i in depots) for node_j in customers),'>=',quicksum(node_j.demand/trucks[0].Q for node_j in customers),name=f'cient_dem')
+    
+    model.update()
 
+    model.setObjectiveN(quicksum(node_i.cost*y[node_i.id] for node_i in depots)+
+                        quicksum(quicksum(trucks[0].F*a[node_i.id,node_j.id] for node_i in depots) for node_j in customers)+
+                        quicksum(quicksum(costs[node_i.id,node_j.id]*x[node_i.id,node_j.id] for node_i in nodes) for node_j in nodes)+
+                        quicksum(quicksum(costs[node_i.id,node_j.id]*a[node_i.id,node_j.id] for node_i in depots) for node_j in customers), 0, 1)
+
+    # model.setOjbectiveN(quicksum(costs[node_i.id,node_j.id]*x[node_i.id,node_j.id] for l in L for k in stations), 1, 0)
 
     model.update()
     model.write("VRP_Model.lp")
@@ -156,15 +167,17 @@ if __name__ == '__main__':
     depots, customers, trucks = generateInput(3,3,1)
 
     # V
-    nodes = [*depots, *customers]    
+    nodes = [*depots, *customers]
 
-    for object in nodes:
-        print(vars(object))
+    costs = generateCostsBetweenNodes(depots, customers)    
+
+    # for object in nodes:
+    #     print(vars(object))
 
     #=================================================================================================
     start_time = time()
     
-    VRP_Problem(depots, customers, trucks, nodes)
+    VRP_Problem(depots, customers, trucks, nodes, costs)
     
     elapsed_time = time() - start_time
 
