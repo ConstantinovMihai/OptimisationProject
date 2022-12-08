@@ -3,7 +3,7 @@
 import numpy as np
 
 class Depot:
-    def __init__(self, Oi, Wi, x, y, z):
+    def __init__(self, Oi, Wi, x, y, z, id):
         """ Constructor of the Depot class
 
         Args:
@@ -16,13 +16,14 @@ class Depot:
 
         self.cost = Oi
         self.cap = Wi
+        self.id = id
         self.x = x
         self.y = y
         self.z = z
 
 
 class Customer:
-    def __init__(self, D, x, y, z):
+    def __init__(self, D, x, y, z, id):
         """ Constructor of the Customer class
 
         Args:
@@ -36,10 +37,11 @@ class Customer:
         self.x = x
         self.y = y
         self.z = z
+        self.id = id
 
 
 class Truck:
-    def __init__(self, F, Q, m, F_wind, F_internal, E):
+    def __init__(self, F, Q, m, F_wind, F_internal, E, id):
         """ Constructor of the Truck class
 
         Args:
@@ -57,5 +59,6 @@ class Truck:
         self.F_wind = F_wind
         self.F_internal = F_internal
         self.E = E
+        self.id = id
 
 

@@ -4,12 +4,12 @@ import numpy as np
 from parameters import *
 
 
-def generatesInputDepos(nb_depots : int):
+def generatesInputDepos(nb_depots : int, id_list : np.array):
     """ creates the Depot classes and generates data for their attributes
 
     Args:
         nb_depots (int): number of depos
-
+        id_list (np.array): the list wiht ids for the customers
     Returns a list containing the newly created classes
     """
     depos = []
@@ -20,17 +20,19 @@ def generatesInputDepos(nb_depots : int):
         x = np.random.uniform(low=0, high=100)
         y = np.random.uniform(low=0, high=100)
         z = np.random.uniform(low=0, high=10)
-        new_depo = Depot(Oi, Wi, x, y, z)
+        new_depo = Depot(Oi, Wi, x, y, z, id=id_list[i])
         depos.append(new_depo)
 
     return depos
 
 
-def generatesInputCustomers(nb_customers : int):
+
+def generatesInputCustomers(nb_customers : int, id_list : np.array):
     """ creates the Customer classes and generates data for their attributes
 
     Args:
         nb_customers (int): number of depos
+        id_list (np.array): the list wiht ids for the customers
     
     Returns a list containing the newly created classes
     """
@@ -41,10 +43,11 @@ def generatesInputCustomers(nb_customers : int):
         x = np.random.uniform(low=0, high=100)
         y = np.random.uniform(low=0, high=100)
         z = np.random.uniform(low=0, high=10)
-        new_customer = Customer(dem, x, y, z)
+        new_customer = Customer(dem, x, y, z, id = id_list[i])
         customers.append(new_customer)
 
     return customers
+
 
 
 def generatesInputTrucks(nb_trucks : int):
@@ -64,7 +67,7 @@ def generatesInputTrucks(nb_trucks : int):
         F_wind = max(np.random.normal(loc=30, scale=10), 10)
         F_int = max(np.random.normal(loc=30, scale=10), 10)
         E = max(np.random.normal(loc=30, scale=10), 10)
-        new_customer = Truck(F, Q, m, F_wind, F_int, E)
+        new_customer = Truck(F, Q, m, F_wind, F_int, E, id = i)
 
         customers.append(new_customer)
 
@@ -79,9 +82,11 @@ def generateInput(nb_depots : int, nb_customers : int, nb_trucks : int):
         nb_customers (int): total number of customers
         nb_trucks (int): total number of available trucks
     """
-    
-    depos = generatesInputDepos(nb_depots)
-    customers = generatesInputCustomers(nb_customers)
+
+    id_list = np.arange(nb_customers + nb_depots)
+   
+    depos = generatesInputDepos(nb_depots, id_list[:nb_depots])
+    customers = generatesInputCustomers(nb_customers, id_list[nb_depots : nb_depots + nb_customers])
     trucks = generatesInputTrucks(nb_trucks)
 
     return depos, customers, trucks
