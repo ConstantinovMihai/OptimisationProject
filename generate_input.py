@@ -3,7 +3,7 @@
 import numpy as np
 from parameters import *
 
-np.random.seed(421)
+np.random.seed(422)
 
 def generatesInputDepos(nb_depots : int, id_list : np.array):
     """ creates the Depot classes and generates data for their attributes
@@ -16,11 +16,11 @@ def generatesInputDepos(nb_depots : int, id_list : np.array):
     depos = []
     for i in range(nb_depots):
         # cost of setting the depo
-        Oi = max(np.random.normal(loc=100, scale=10), 0) 
-        Wi = np.random.uniform(low=5, high=40)
-        x = np.random.uniform(low=0, high=100)              # x-coordinate
-        y = np.random.uniform(low=0, high=100)              # y-coordinate
-        z = np.random.uniform(low=0, high=10)               # z-coordinate
+        Oi = max(np.random.normal(loc=100, scale=10), 0)
+        Wi = np.random.uniform(low=200, high=300)
+        x = np.random.uniform(low=0, high=100)
+        y = np.random.uniform(low=0, high=100)
+        z = np.random.uniform(low=0, high=10)
         new_depo = Depot(Oi, Wi, x, y, z, id=id_list[i])
         depos.append(new_depo)
 
@@ -40,7 +40,7 @@ def generatesInputCustomers(nb_customers : int, id_list : np.array):
     customers = []
     for i in range(nb_customers):
         # cost of setting the depo
-        dem = max(np.random.normal(loc=100, scale=10), 0)
+        dem = max(np.random.normal(loc=30, scale=10), 0)
         x = np.random.uniform(low=0, high=100)
         y = np.random.uniform(low=0, high=100)
         z = np.random.uniform(low=0, high=10)
@@ -63,7 +63,7 @@ def generatesInputTrucks(nb_trucks : int):
     for i in range(nb_trucks):
         # cost of setting the depo
         F = max(np.random.normal(loc=30, scale=10), 0)
-        Q = max(np.random.normal(loc=30, scale=10), 10)
+        Q = max(np.random.normal(loc=100, scale=10), 10)
         m = max(np.random.normal(loc=30, scale=10), 10)
         F_wind = max(np.random.normal(loc=30, scale=10), 10)
         F_int = max(np.random.normal(loc=30, scale=10), 10)
