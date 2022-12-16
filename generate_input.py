@@ -3,6 +3,7 @@
 import numpy as np
 from parameters import *
 
+np.random.seed(421)
 
 def generatesInputDepos(nb_depots : int, id_list : np.array):
     """ creates the Depot classes and generates data for their attributes

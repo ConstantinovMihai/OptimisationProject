@@ -21,7 +21,7 @@ def VRP_Problem (depots, customers, trucks, nodes, costs):
     f = {} # BV indicating if customer at node j is served by route that starts at depo at node i
     for node_i in depots:
         for node_j in nodes:
-            f[node_i.id,node_j.id] = model.addVar(vtype = "B", name =  f"x_{node_i.id}{node_j.id}")
+            f[node_i.id,node_j.id] = model.addVar(vtype = "B", name =  f"f_{node_i.id}{node_j.id}")
     
     z = {} # BV if customer at node j is last one served in route
     for node_j in customers:
@@ -171,8 +171,8 @@ if __name__ == '__main__':
 
     costs = generateCostsBetweenNodes(depots, customers)    
 
-    # for object in nodes:
-    #     print(vars(object))
+    for object in nodes:
+        print(vars(object))
 
     #=================================================================================================
     start_time = time()
