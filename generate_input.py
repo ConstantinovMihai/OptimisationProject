@@ -17,7 +17,7 @@ def generatesInputDepos(nb_depots : int, id_list : np.array):
     for i in range(nb_depots):
         # cost of setting the depo
         Oi = max(np.random.normal(loc=100, scale=10), 0)
-        Wi = np.random.uniform(low=500, high=800)
+        Wi = np.random.uniform(low=200, high=300)
         x = np.random.uniform(low=0, high=100)
         y = np.random.uniform(low=0, high=100)
         z = np.random.uniform(low=0, high=10)

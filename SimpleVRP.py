@@ -35,7 +35,7 @@ def VRP_Problem (depots, customers, trucks, nodes, costs):
     t = {} # CV indicating the amount of cargo transported between nodes i and j
     for node_i in nodes:
         for node_j in nodes:
-            t[node_i.id,node_j.id] = model.addVar(vtype = "B", name = f"t_{node_i.id}{node_j.id}")
+            t[node_i.id,node_j.id] = model.addVar(vtype = "C", name = f"t_{node_i.id}{node_j.id}")
     
     model.update()                      
 
@@ -153,7 +153,8 @@ def VRP_Problem (depots, customers, trucks, nodes, costs):
         exit(0)
 
     for v in model.getVars():
-        print('%s %g' % (v.varName, v.x))
+        if v.x > 0:
+            print('%s %g' % (v.varName, v.x))
     model.write("VRP_model.sol")
     
 
@@ -171,7 +172,7 @@ if __name__ == '__main__':
     # Input excel file with arcs data (sheet1) and commodities data (sheet2)
 
     # I, J
-    depots, customers, trucks = generateInput(1,1,1)
+    depots, customers, trucks = generateInput(3,3,1)
 
     # V
     nodes = [*depots, *customers]
