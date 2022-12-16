@@ -1,0 +1,11 @@
+\ Model VRP_copy
+\ LP format - for model browsing. Use MPS format to capture full model detail.
+Minimize multi-objectives
+  OBJ0: Priority=1 Weight=1 AbsTol=1e-06 RelTol=0
+  
+Subject To
+ flow_balance1: t_01 - t_10 = 16.65942178476886
+Bounds
+Binaries
+ t_01 t_10
+End

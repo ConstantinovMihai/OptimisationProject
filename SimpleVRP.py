@@ -111,15 +111,15 @@ def VRP_Problem (depots, customers, trucks, nodes, costs):
 
     # HCECKKC of this is RIGHTSTSTTSTS
     min_depots = {} # 28 lower limit to the number of deposits that must be constructed according to the sum of the demands and the capacity of the facility
-    for node_i in depots:
-        min_depots[node_i.id] = model.addConstr(quicksum(y[node_i.id] for node_i in depots),">=",quicksum(node_j.demand for node_j in customers)/node_i.cap,name=f'min_depots{node_i.id}')
+    # for node_i in depots:
+    min_depots[0] = model.addConstr(quicksum(y[node_i.id]*node_i.cap for node_i in depots),">=",quicksum(node_j.demand for node_j in customers),name=f'min_depots{node_i.id}')
 
     depot_route_cap = {} # 29 number of routes that can leave a deposit is restricted according with the facility capacity and vehicle capacity
     for node_i in depots:    
         depot_route_cap[node_i.id] = model.addConstr(quicksum(x[node_i.id,node_j.id] for node_j in customers),'<=',node_i.cap/trucks[0].Q, name=f"depot_route_cap{node_i.id}")
 
     cient_dem = {} # 30 number of routes is sufficient to attend all clients demand
-    cient_dem[0] = model.addConstr(quicksum(quicksum(x[node_i.id,node_j.id] for node_i in depots) for node_j in customers),'>=',quicksum(node_j.demand/trucks[0].Q for node_j in customers),name=f'cient_dem')
+    cient_dem[0] = model.addConstr(quicksum(quicksum(x[node_i.id,node_j.id] for node_i in depots) for node_j in customers),'>=',quicksum(node_j.demand/trucks[0].Q for node_j in customers),name=f'client_dem')
     
     model.update()
 
@@ -131,8 +131,10 @@ def VRP_Problem (depots, customers, trucks, nodes, costs):
     # model.setOjbectiveN(quicksum(costs[node_i.id,node_j.id]*x[node_i.id,node_j.id] for l in L for k in stations), 1, 0)
 
     model.update()
-    model.write("VRP_Model.lp")
+    model.write("VRP_Model.lp")    
     model.optimize()
+    
+   
     
     status = model.status
     if status != GRB.Status.OPTIMAL:
@@ -141,6 +143,7 @@ def VRP_Problem (depots, customers, trucks, nodes, costs):
         elif status == GRB.Status.INFEASIBLE:
             print('The model is infeasible; computing IIS')
             model.computeIIS()
+            model.write('VRP_model.ilp')
             print('\nThe following constraint(s) cannot be satisfied:')
             for c in model.getConstrs():
                 if c.IISConstr:
@@ -149,6 +152,10 @@ def VRP_Problem (depots, customers, trucks, nodes, costs):
             print('Optimization was stopped with status %d' % status)
         exit(0)
 
+    for v in model.getVars():
+        print('%s %g' % (v.varName, v.x))
+    model.write("VRP_model.sol")
+    
 
     print
    
@@ -164,7 +171,7 @@ if __name__ == '__main__':
     # Input excel file with arcs data (sheet1) and commodities data (sheet2)
 
     # I, J
-    depots, customers, trucks = generateInput(3,3,1)
+    depots, customers, trucks = generateInput(1,1,1)
 
     # V
     nodes = [*depots, *customers]
@@ -172,6 +179,8 @@ if __name__ == '__main__':
     costs = generateCostsBetweenNodes(depots, customers)    
 
     for object in nodes:
+        print(vars(object))
+    for object in trucks:
         print(vars(object))
 
     #=================================================================================================
