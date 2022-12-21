@@ -3,6 +3,7 @@ from numpy import *
 from openpyxl import *
 from time import *
 from generate_input import generateInput, generateCostsBetweenNodes
+import pickle
 
 
 def VRP_Problem (depots, customers, trucks, nodes, costs):
@@ -152,16 +153,21 @@ def VRP_Problem (depots, customers, trucks, nodes, costs):
             print('Optimization was stopped with status %d' % status)
         exit(0)
 
+    vars = {}
     for v in model.getVars():
-        if v.x > 0:
-            print('%s %g' % (v.varName, v.x))
+        vars[v.varName] = v.x
+
     model.write("VRP_model.sol")
-    
+
+    data = (vars,depots, customers, trucks, nodes, costs)
+
+    with open('inp_out.pickle', 'wb') as file:
+        pickle.dump(data, file)
 
     print
    
     print
-    print ("Objective Function =", model.ObjVal/1.0)
+    print ("Objective Function =", round(model.ObjVal/1.0, 3))
     print ("------------------------------------------------------------------------")
     
     
@@ -191,5 +197,5 @@ if __name__ == '__main__':
     
     elapsed_time = time() - start_time
 
-    print ("Run Time = ", elapsed_time)
+    print ("Run Time = ", round(elapsed_time, 4), '[s]')
     print ("END")
