@@ -1,6 +1,5 @@
 from gurobipy import Model, quicksum, GRB
 from numpy import *
-from openpyxl import *
 from time import *
 from generate_input import generateInput, generateCostsBetweenNodes
 import pickle
@@ -156,14 +155,16 @@ def VRP_Problem (depots, customers, trucks, nodes, costs):
     vars = {}
     for v in model.getVars():
         vars[v.varName] = v.x
+        if v.x > 0:
+            print('%s %g' % (v.varName, v.x))
 
     model.write("VRP_model.sol")
 
-    data = (vars,depots, customers, trucks, nodes, costs)
+    data = (vars, depots, customers, trucks, nodes, costs)
 
     with open('inp_out.pickle', 'wb') as file:
         pickle.dump(data, file)
-
+          
     print
    
     print
