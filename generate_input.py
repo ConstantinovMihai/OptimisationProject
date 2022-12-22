@@ -3,7 +3,7 @@
 import numpy as np
 from parameters import *
 
-np.random.seed(422)
+np.random.seed(425)
 
 def generatesInputDepos(nb_depots : int, id_list : np.array):
     """ creates the Depot classes and generates data for their attributes
@@ -17,7 +17,7 @@ def generatesInputDepos(nb_depots : int, id_list : np.array):
     for i in range(nb_depots):
         # cost of setting the depo
         Oi = max(np.random.normal(loc=100, scale=10), 0)
-        Wi = np.random.uniform(low=200, high=3000)
+        Wi = np.random.uniform(low=200, high=500)
         x = np.random.uniform(low=0, high=100)
         y = np.random.uniform(low=0, high=100)
         z = np.random.uniform(low=0, high=10)

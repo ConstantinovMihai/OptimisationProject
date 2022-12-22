@@ -179,7 +179,7 @@ if __name__ == '__main__':
     # Input excel file with arcs data (sheet1) and commodities data (sheet2)
 
     # I, J
-    depots, customers, trucks = generateInput(2,15,1)
+    depots, customers, trucks = generateInput(3,15,6)
 
     # V
     nodes = [*depots, *customers]

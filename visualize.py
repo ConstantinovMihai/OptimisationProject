@@ -12,11 +12,7 @@ file = open('inp_out.pickle','rb')
 data = pickle.load(file)
 
 (vars, depots, customers, trucks, nodes, costs) = data
-print(vars)
-for var in vars:
-    x = vars[var]
-    if x != 0:
-        print(var, '=', round(x,1))
+
 # create lists for the depo with id and coordinates
 depo_id = [depo.id for depo in depots]
 depo_x = [round(depo.x,1) for depo in depots]
@@ -28,9 +24,8 @@ ax.scatter(depo_x, depo_y, c='b', marker = '^')
 
 # plot and label depots
 for id, x, y in zip(depo_id, depo_x, depo_y):
-    print(id, x, y)
     label = f"d{id}" #\n ({x},{y})"
-    ax.text(x+2, y, label)
+    ax.text(x+1, y, label)        #create some separation with x-coordinate when adding label in plot
 
 customer_id = [customer.id for customer in customers]
 customer_x = [round(customer.x,1) for customer in customers]
@@ -42,12 +37,36 @@ ax.scatter(customer_x, customer_y, c='r', marker = 'o')
 
 # plot and label customers
 for id, x, y in zip(customer_id, customer_x, customer_y):
-    print(id, x, y)
     label = f"c{id}" # \n ({x},{y})"
-    ax.text(x+2, y, label)
+    ax.text(x+1, y, label)
 
+# make joined list so that it includes all nodes
+# Id corresponds to index in list
+nodes_x = depo_x + customer_x  
+nodes_y = depo_y + customer_y
+
+def connect(id1, id2):
+    """ plot the connection between two nodes """
+    x_values = [nodes_x[id1], nodes_x[id2]]
+    y_values = [nodes_y[id1], nodes_y[id2]]
+    plt.plot(x_values, y_values, linestyle="-", color = 'g')
+
+""" 
+for loop that checks if variable is active (>0)
+if the variable is an x or a variable, plot a line between nodes
+"""
+for var in vars:
+    x = vars[var]
+    if x != 0:
+        if var[0] == 'x' or var[0] == 'a':
+            id1, sep, id2 = str.partition(var, '_')
+            id1 = int(id1[1:])
+            id2 = int(id2)
+            connect(id1, id2)
+            print(var, '=', round(x,1))
+    
 ax.set_xlabel('x-axis')
 ax.set_ylabel('y-axis')
 ax.axes.set_xlim(left=0, right=100)
 ax.axes.set_ylim(bottom=0, top=100)
-#plt.show()
+plt.show()
