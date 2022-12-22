@@ -12,7 +12,7 @@ def VRP_Problem (depots, customers, trucks, nodes, costs):
     x = {} # BV indicating the use of the path between nodes i,j
     for node_i in nodes:
         for node_j in nodes:
-            x[node_i.id,node_j.id] = model.addVar(vtype ="B", name = f"x_{node_i.id}{node_j.id}")
+            x[node_i.id,node_j.id] = model.addVar(vtype ="B", name = f"x{node_i.id}_{node_j.id}")
     
     y = {} # BV indicating the use of facility i
     for depo in depots:
@@ -21,7 +21,7 @@ def VRP_Problem (depots, customers, trucks, nodes, costs):
     f = {} # BV indicating if customer at node j is served by route that starts at depo at node i
     for node_i in depots:
         for node_j in nodes:
-            f[node_i.id,node_j.id] = model.addVar(vtype = "B", name =  f"f_{node_i.id}{node_j.id}")
+            f[node_i.id,node_j.id] = model.addVar(vtype = "B", name =  f"f{node_i.id}_{node_j.id}")
     
     z = {} # BV if customer at node j is last one served in route
     for node_j in customers:
@@ -30,12 +30,12 @@ def VRP_Problem (depots, customers, trucks, nodes, costs):
     a = {} # BV that indicates if a vehicle uses path j to return from the end of its route (at node j) to a depot (at node i)
     for node_i in depots:
         for node_j in customers:
-            a[node_i.id,node_j.id] = model.addVar(vtype = "B", name = f"a_{node_i.id}{node_j.id}")
+            a[node_i.id,node_j.id] = model.addVar(vtype = "B", name = f"a{node_i.id}_{node_j.id}")
 
     t = {} # CV indicating the amount of cargo transported between nodes i and j
     for node_i in nodes:
         for node_j in nodes:
-            t[node_i.id,node_j.id] = model.addVar(vtype = "C", name = f"t_{node_i.id}{node_j.id}")
+            t[node_i.id,node_j.id] = model.addVar(vtype = "C", name = f"t{node_i.id}_{node_j.id}")
     
     model.update()                      
 
@@ -179,7 +179,7 @@ if __name__ == '__main__':
     # Input excel file with arcs data (sheet1) and commodities data (sheet2)
 
     # I, J
-    depots, customers, trucks = generateInput(3,3,1)
+    depots, customers, trucks = generateInput(2,15,1)
 
     # V
     nodes = [*depots, *customers]

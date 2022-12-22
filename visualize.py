@@ -12,6 +12,11 @@ file = open('inp_out.pickle','rb')
 data = pickle.load(file)
 
 (vars, depots, customers, trucks, nodes, costs) = data
+print(vars)
+for var in vars:
+    x = vars[var]
+    if x != 0:
+        print(var, '=', round(x,1))
 # create lists for the depo with id and coordinates
 depo_id = [depo.id for depo in depots]
 depo_x = [round(depo.x,1) for depo in depots]
@@ -24,7 +29,7 @@ ax.scatter(depo_x, depo_y, c='b', marker = '^')
 # plot and label depots
 for id, x, y in zip(depo_id, depo_x, depo_y):
     print(id, x, y)
-    label = f"d {id}" #\n ({x},{y})"
+    label = f"d{id}" #\n ({x},{y})"
     ax.text(x+2, y, label)
 
 customer_id = [customer.id for customer in customers]
@@ -38,11 +43,11 @@ ax.scatter(customer_x, customer_y, c='r', marker = 'o')
 # plot and label customers
 for id, x, y in zip(customer_id, customer_x, customer_y):
     print(id, x, y)
-    label = f"c {id}" # \n ({x},{y})"
+    label = f"c{id}" # \n ({x},{y})"
     ax.text(x+2, y, label)
 
-ax.set_xlabel('x')
-ax.set_ylabel('y')
+ax.set_xlabel('x-axis')
+ax.set_ylabel('y-axis')
 ax.axes.set_xlim(left=0, right=100)
 ax.axes.set_ylim(bottom=0, top=100)
-plt.show()
+#plt.show()
