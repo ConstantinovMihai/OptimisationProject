@@ -30,7 +30,7 @@ def VRP_Problem (depots, customers, trucks, nodes, costs):
     a = {} # BV that indicates if a vehicle uses path j to return from the end of its route (at node j) to a depot (at node i)
     for node_i in depots:
         for node_j in customers:
-            a[node_i.id,node_j.id] = model.addVar(vtype = "B", name = f"a{node_i.id}_{node_j.id}")
+            a[node_i.id,node_j.id] = model.addVar(vtype = "B", name = f"a{node_j.id}_{node_i.id}")
 
     t = {} # CV indicating the amount of cargo transported between nodes i and j
     for node_i in nodes:
@@ -179,7 +179,7 @@ if __name__ == '__main__':
     # Input excel file with arcs data (sheet1) and commodities data (sheet2)
 
     # I, J
-    depots, customers, trucks = generateInput(3,15,6)
+    depots, customers, trucks = generateInput(2,12,3)
 
     # V
     nodes = [*depots, *customers]
