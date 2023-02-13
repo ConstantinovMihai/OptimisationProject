@@ -1,8 +1,8 @@
 from gurobipy import Model, quicksum, GRB
 from numpy import *
-from openpyxl import *
 from time import *
 from generate_input import generateInput, generateCostsBetweenNodes
+import pickle
 
 
 def VRP_Problem (depots, customers, trucks, nodes, costs):
@@ -35,7 +35,7 @@ def VRP_Problem (depots, customers, trucks, nodes, costs):
     t = {} # CV indicating the amount of cargo transported between nodes i and j
     for node_i in nodes:
         for node_j in nodes:
-            t[node_i.id,node_j.id] = model.addVar(vtype = "B", name = f"t_{node_i.id}{node_j.id}")
+            t[node_i.id,node_j.id] = model.addVar(vtype = "C", name = f"t_{node_i.id}{node_j.id}")
     
     model.update()                      
 
@@ -152,15 +152,23 @@ def VRP_Problem (depots, customers, trucks, nodes, costs):
             print('Optimization was stopped with status %d' % status)
         exit(0)
 
+    vars = {}
     for v in model.getVars():
-        print('%s %g' % (v.varName, v.x))
-    model.write("VRP_model.sol")
-    
+        vars[v.varName] = v.x
+        if v.x > 0:
+            print('%s %g' % (v.varName, v.x))
 
+    model.write("VRP_model.sol")
+
+    data = (vars, depots, customers, trucks, nodes, costs)
+
+    with open('inp_out.pickle', 'wb') as file:
+        pickle.dump(data, file)
+          
     print
    
     print
-    print ("Objective Function =", model.ObjVal/1.0)
+    print ("Objective Function =", round(model.ObjVal/1.0, 3))
     print ("------------------------------------------------------------------------")
     
     
@@ -171,7 +179,7 @@ if __name__ == '__main__':
     # Input excel file with arcs data (sheet1) and commodities data (sheet2)
 
     # I, J
-    depots, customers, trucks = generateInput(1,1,1)
+    depots, customers, trucks = generateInput(3,3,1)
 
     # V
     nodes = [*depots, *customers]
@@ -190,5 +198,5 @@ if __name__ == '__main__':
     
     elapsed_time = time() - start_time
 
-    print ("Run Time = ", elapsed_time)
+    print ("Run Time = ", round(elapsed_time, 4), '[s]')
     print ("END")

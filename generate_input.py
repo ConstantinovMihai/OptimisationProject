@@ -10,14 +10,14 @@ def generatesInputDepos(nb_depots : int, id_list : np.array):
 
     Args:
         nb_depots (int): number of depos
-        id_list (np.array): the list wiht ids for the customers
+        id_list (np.array): the list with ids for the customers
     Returns a list containing the newly created classes
     """
     depos = []
     for i in range(nb_depots):
         # cost of setting the depo
         Oi = max(np.random.normal(loc=100, scale=10), 0)
-        Wi = np.random.uniform(low=500, high=800)
+        Wi = np.random.uniform(low=200, high=300)
         x = np.random.uniform(low=0, high=100)
         y = np.random.uniform(low=0, high=100)
         z = np.random.uniform(low=0, high=10)
