@@ -1,11 +1,11 @@
 from gurobipy import Model, quicksum, GRB
 from numpy import *
 from time import *
-from generate_input import generateInput, generateCostsBetweenNodes
+from generate_input import generateInput, generateCostsBetweenNodes, generateAlphaGamma
 import pickle
 
 
-def VRP_Problem (depots, customers, trucks, nodes, costs):
+def VRP_Problem (depots, customers, trucks, nodes, costs, alpha, gamma, distance):
     
     model = Model("VRP")                # LP model (this is an object)
     
@@ -123,10 +123,16 @@ def VRP_Problem (depots, customers, trucks, nodes, costs):
     
     model.update()
 
-    model.setObjectiveN(quicksum(node_i.cost*y[node_i.id] for node_i in depots)+
-                        quicksum(quicksum(trucks[0].F*a[node_i.id,node_j.id] for node_i in depots) for node_j in customers)+
-                        quicksum(quicksum(costs[node_i.id,node_j.id]*x[node_i.id,node_j.id] for node_i in nodes) for node_j in nodes)+
-                        quicksum(quicksum(costs[node_i.id,node_j.id]*a[node_i.id,node_j.id] for node_i in depots) for node_j in customers), 0, 1)
+    # model.setObjectiveN(quicksum(node_i.cost*y[node_i.id] for node_i in depots)+
+    #                     quicksum(quicksum(trucks[0].F*a[node_i.id,node_j.id] for node_i in depots) for node_j in customers)+
+    #                     quicksum(quicksum(costs[node_i.id,node_j.id]*x[node_i.id,node_j.id] for node_i in nodes) for node_j in nodes)+
+    #                     quicksum(quicksum(costs[node_i.id,node_j.id]*a[node_i.id,node_j.id] for node_i in depots) for node_j in customers), 0, 1)
+
+    model.setObjectiveN(quicksum(quicksum(alpha[node_i.id,node_j.id]*distance[node_i.id,node_j.id]*x[node_i.id,node_j.id] for node_i in nodes) for node_j in nodes) +
+                        quicksum(quicksum(alpha[node_i.id,node_j.id]*distance[node_i.id,node_j.id]*a[node_i.id,node_j.id] for node_i in depots) for node_j in customers) +
+                        quicksum(quicksum(gamma[node_i.id,node_j.id]*distance[node_i.id,node_j.id]*t[node_i.id,node_j.id] for node_i in nodes) for node_j in nodes), 0, 1)
+    
+
 
     # model.setOjbectiveN(quicksum(costs[node_i.id,node_j.id]*x[node_i.id,node_j.id] for l in L for k in stations), 1, 0)
 
@@ -179,22 +185,24 @@ if __name__ == '__main__':
     # Input excel file with arcs data (sheet1) and commodities data (sheet2)
 
     # I, J
-    depots, customers, trucks = generateInput(2,12,3)
+    depots, customers, trucks = generateInput(2,5)
 
     # V
     nodes = [*depots, *customers]
 
     costs = generateCostsBetweenNodes(depots, customers)    
+    alpha, gamma, distance = generateAlphaGamma(depots, customers)
 
-    for object in nodes:
-        print(vars(object))
-    for object in trucks:
-        print(vars(object))
+
+    # for object in nodes:
+    #     print(vars(object))
+    # for object in trucks:
+    #     print(vars(object))
 
     #=================================================================================================
     start_time = time()
     
-    VRP_Problem(depots, customers, trucks, nodes, costs)
+    VRP_Problem(depots, customers, trucks, nodes, costs, alpha, gamma, distance)
     
     elapsed_time = time() - start_time
 
