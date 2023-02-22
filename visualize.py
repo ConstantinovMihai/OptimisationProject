@@ -49,7 +49,7 @@ def connect(id1, id2):
     """ plot the connection between two nodes """
     x_values = [nodes_x[id1], nodes_x[id2]]
     y_values = [nodes_y[id1], nodes_y[id2]]
-    plt.arrow(nodes_x[id1], nodes_y[id1], 0.95*(nodes_x[id2]-nodes_x[id1]), 0.95*(nodes_y[id2]-nodes_y[id1]), lw=0, fc = 'black', length_includes_head=True, head_width=1)
+    plt.arrow(nodes_x[id1], nodes_y[id1], 0.85*(nodes_x[id2]-nodes_x[id1]), 0.85*(nodes_y[id2]-nodes_y[id1]), lw=0, fc = 'black', length_includes_head=True, head_width=1)
     plt.plot(x_values, y_values, linestyle="-", color = 'black', linewidth = 0.5)
     
 

@@ -109,8 +109,7 @@ def VRP_Problem (depots, customers, trucks, nodes, costs, alpha, gamma, distance
             depot_con[node_i.id,node_j.id] = model.addConstr(f[node_i.id,node_j.id],'>=',x[node_i.id,node_j.id],name=f"depot_con{node_i.id}{node_j.id}")
 
 
-    # HCECKKC of this is RIGHTSTSTTSTS
-    min_depots = {} # 28 lower limit to the number of deposits that must be constructed according to the sum of the demands and the capacity of the facility
+    min_depots = {} # 28 total depot capacity should exceed total customer demand
     # for node_i in depots:
     min_depots[0] = model.addConstr(quicksum(y[node_i.id]*node_i.cap for node_i in depots),">=",quicksum(node_j.demand for node_j in customers),name=f'min_depots{node_i.id}')
 
@@ -185,7 +184,11 @@ if __name__ == '__main__':
     # Input excel file with arcs data (sheet1) and commodities data (sheet2)
 
     # I, J
+<<<<<<< Updated upstream
     depots, customers, trucks = generateInput(2,5)
+=======
+    depots, customers, trucks = generateInput(1,10,10)
+>>>>>>> Stashed changes
 
     # V
     nodes = [*depots, *customers]
@@ -193,12 +196,20 @@ if __name__ == '__main__':
     costs = generateCostsBetweenNodes(depots, customers)    
     alpha, gamma, distance = generateAlphaGamma(depots, customers)
 
+<<<<<<< Updated upstream
 
     # for object in nodes:
     #     print(vars(object))
     # for object in trucks:
     #     print(vars(object))
 
+=======
+    """ for object in nodes:
+        print(vars(object))
+    for object in trucks:
+        print(vars(object))
+ """
+>>>>>>> Stashed changes
     #=================================================================================================
     start_time = time()
     
