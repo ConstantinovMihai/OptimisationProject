@@ -184,11 +184,7 @@ if __name__ == '__main__':
     # Input excel file with arcs data (sheet1) and commodities data (sheet2)
 
     # I, J
-<<<<<<< Updated upstream
     depots, customers, trucks = generateInput(2,5)
-=======
-    depots, customers, trucks = generateInput(1,10,10)
->>>>>>> Stashed changes
 
     # V
     nodes = [*depots, *customers]
@@ -196,20 +192,12 @@ if __name__ == '__main__':
     costs = generateCostsBetweenNodes(depots, customers)    
     alpha, gamma, distance = generateAlphaGamma(depots, customers)
 
-<<<<<<< Updated upstream
 
     # for object in nodes:
     #     print(vars(object))
     # for object in trucks:
     #     print(vars(object))
 
-=======
-    """ for object in nodes:
-        print(vars(object))
-    for object in trucks:
-        print(vars(object))
- """
->>>>>>> Stashed changes
     #=================================================================================================
     start_time = time()
     
