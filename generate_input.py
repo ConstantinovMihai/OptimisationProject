@@ -54,15 +54,20 @@ def generatesInputDepos(nb_depots : int, id_list : np.array):
     Returns a list containing the newly created classes
     """
     depos = []
+    depos_cap = []
     for i in range(nb_depots):
         # cost of setting the depo
         Oi = max(np.random.normal(loc=100, scale=10), 0)
-        Wi = np.random.uniform(low=200, high=500)
+        Wi = 250
         x = np.random.uniform(low=0, high=100)
         y = np.random.uniform(low=0, high=100)
         z = generateTerrain(x,y)
         new_depo = Depot(Oi, Wi, x, y, z, id=id_list[i])
         depos.append(new_depo)
+        depos_cap.append(new_depo.cap)
+    
+    print('total depos capacity:  ', round(sum(depos_cap), 1))
+
     return depos
 
 
@@ -77,14 +82,18 @@ def generatesInputCustomers(nb_customers : int, id_list : np.array):
     Returns a list containing the newly created classes
     """
     customers = []
+    customer_dem = []
     for i in range(nb_customers):
         # cost of setting the depo
-        dem = max(np.random.normal(loc=30, scale=10), 0)
+        dem = 25
         x = np.random.uniform(low=0, high=100)
         y = np.random.uniform(low=0, high=100)
         z = generateTerrain(x,y)
         new_customer = Customer(dem, x, y, z, id = id_list[i])
         customers.append(new_customer)
+        customer_dem.append(new_customer.demand)
+
+    print('total demand customers:', round(sum(customer_dem), 1))
     return customers
 
 
@@ -97,19 +106,24 @@ def generatesInputTrucks(nb_trucks : int):
     
     Returns a list containing the newly created classes
     """
-    customers = []
+    trucks = []
+    trucks_cap = []                       #find total truck capacity (trucks cannot do same route twice?)
     for i in range(nb_trucks):
-        F = 80 # euro/day
-        Q = 100 # units
-        m = truck_mass # kg
+        # cost of setting the depo
+        F = max(np.random.normal(loc=30, scale=10), 0)
+        Q = 100
+        m = max(np.random.normal(loc=30, scale=10), 10)
         F_wind = max(np.random.normal(loc=30, scale=10), 10)
         F_int = max(np.random.normal(loc=30, scale=10), 10)
         E = max(np.random.normal(loc=30, scale=10), 10)
-        new_customer = Truck(F, Q, m, F_wind, F_int, E, id = i)
+        new_truck = Truck(F, Q, m, F_wind, F_int, E, id = i)
+        trucks_cap.append(new_truck.Q)
+        trucks.append(new_truck)
 
-        customers.append(new_customer)
-
-    return customers
+    # print('list of truck capacity', total_tQ)
+    print('total truck capacity:  ', round(sum(trucks_cap),1))
+    
+    return trucks
 
 
 def generateCostsBetweenNodes(depos, customers):
@@ -191,5 +205,5 @@ def generateInput(nb_depots : int, nb_customers : int):
 if __name__ == "__main__":
     stuff = generateInput(2, 5)
     costs = generateCostsBetweenNodes(depos = stuff[0], customers = stuff[1])
-    alpha, gamma, distance = generateAlphaGamma(depos = stuff[0], customers = stuff[1])
-
+    #print(costs)
+    print("done")
