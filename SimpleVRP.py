@@ -123,10 +123,10 @@ def VRP_Problem (depots, customers, trucks, nodes, costs, alpha, gamma, distance
     
     model.update()
 
-    # model.setObjectiveN(quicksum(node_i.cost*y[node_i.id] for node_i in depots)+
-    #                     quicksum(quicksum(trucks[0].F*a[node_i.id,node_j.id] for node_i in depots) for node_j in customers)+
-    #                     quicksum(quicksum(costs[node_i.id,node_j.id]*x[node_i.id,node_j.id] for node_i in nodes) for node_j in nodes)+
-    #                     quicksum(quicksum(costs[node_i.id,node_j.id]*a[node_i.id,node_j.id] for node_i in depots) for node_j in customers), 0, 1)
+    model.setObjectiveN(quicksum(node_i.cost*y[node_i.id] for node_i in depots)+
+                        quicksum(quicksum(trucks[0].F*a[node_i.id,node_j.id] for node_i in depots) for node_j in customers)+
+                        quicksum(quicksum(costs[node_i.id,node_j.id]*x[node_i.id,node_j.id] for node_i in nodes) for node_j in nodes)+
+                        quicksum(quicksum(costs[node_i.id,node_j.id]*a[node_i.id,node_j.id] for node_i in depots) for node_j in customers), 1, 2)
 
     model.setObjectiveN(quicksum(quicksum(alpha[node_i.id,node_j.id]*distance[node_i.id,node_j.id]*x[node_i.id,node_j.id] for node_i in nodes) for node_j in nodes) +
                         quicksum(quicksum(alpha[node_i.id,node_j.id]*distance[node_i.id,node_j.id]*a[node_i.id,node_j.id] for node_i in depots) for node_j in customers) +

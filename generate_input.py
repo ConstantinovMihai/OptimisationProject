@@ -3,6 +3,9 @@
 import numpy as np
 from parameters import *
 from scipy.integrate import quad
+import matplotlib.pyplot as plt
+from matplotlib.ticker import LinearLocator
+from matplotlib import cm
 
 np.random.seed(422)
 
