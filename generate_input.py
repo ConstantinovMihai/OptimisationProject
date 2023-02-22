@@ -61,13 +61,10 @@ def generatesInputDepos(nb_depots : int, id_list : np.array):
         z = generateTerrain(x,y)
         new_depo = Depot(Oi, Wi, x, y, z, id=id_list[i])
         depos.append(new_depo)
-<<<<<<< Updated upstream
-=======
         depos_cap.append(new_depo.cap)
     
     print('total depos capacity:  ', round(sum(depos_cap), 1))
 
->>>>>>> Stashed changes
     return depos
 
 
@@ -91,12 +88,9 @@ def generatesInputCustomers(nb_customers : int, id_list : np.array):
         z = generateTerrain(x,y)
         new_customer = Customer(dem, x, y, z, id = id_list[i])
         customers.append(new_customer)
-<<<<<<< Updated upstream
-=======
         customer_dem.append(new_customer.demand)
 
     print('total demand customers:', round(sum(customer_dem), 1))
->>>>>>> Stashed changes
     return customers
 
 
@@ -112,16 +106,10 @@ def generatesInputTrucks(nb_trucks : int):
     trucks = []
     trucks_cap = []                       #find total truck capacity (trucks cannot do same route twice?)
     for i in range(nb_trucks):
-<<<<<<< Updated upstream
-        F = 80 # euro/day
-        Q = 100 # units
-        m = truck_mass # kg
-=======
         # cost of setting the depo
         F = max(np.random.normal(loc=30, scale=10), 0)
         Q = 100
         m = max(np.random.normal(loc=30, scale=10), 10)
->>>>>>> Stashed changes
         F_wind = max(np.random.normal(loc=30, scale=10), 10)
         F_int = max(np.random.normal(loc=30, scale=10), 10)
         E = max(np.random.normal(loc=30, scale=10), 10)
@@ -214,10 +202,5 @@ def generateInput(nb_depots : int, nb_customers : int):
 if __name__ == "__main__":
     stuff = generateInput(2, 5)
     costs = generateCostsBetweenNodes(depos = stuff[0], customers = stuff[1])
-<<<<<<< Updated upstream
-    alpha, gamma, distance = generateAlphaGamma(depos = stuff[0], customers = stuff[1])
-
-=======
     #print(costs)
     print("done")
->>>>>>> Stashed changes
