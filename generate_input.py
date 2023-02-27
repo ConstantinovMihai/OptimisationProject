@@ -22,7 +22,7 @@ def generateTerrain(x,y):
     # generate terrain based on a combination of sines which result in a elevation difference of +/- 20 m over the 100x100km map
     z = ((1/10*np.sin(x/100) + 1/100*np.sin(x/3) + 1/10*np.sin(x/10) + 1/10*np.sin(x/1000))*100 +
         (1/10*np.cos(y/100) + 1/100*np.cos(y/3) + 1/10*np.cos(y/10) + 1/10*np.cos(y/1000))*100)
-    return z
+    return z*10
 
 def congestion_integral(point1, point2):
 
@@ -57,8 +57,8 @@ def generatesInputDepos(nb_depots : int, id_list : np.array):
     depos_cap = []
     for i in range(nb_depots):
         # cost of setting the depo
-        Oi = max(np.random.normal(loc=100, scale=10), 0)
-        Wi = 250
+        Oi = max(np.random.normal(loc=8000, scale=1000), 0)
+        Wi = max(np.random.normal(loc=20000*5, scale=10000), 0)
         x = np.random.uniform(low=0, high=100)
         y = np.random.uniform(low=0, high=100)
         z = generateTerrain(x,y)
@@ -85,7 +85,7 @@ def generatesInputCustomers(nb_customers : int, id_list : np.array):
     customer_dem = []
     for i in range(nb_customers):
         # cost of setting the depo
-        dem = 25
+        dem = max(np.random.normal(loc=2000, scale=100), 0)
         x = np.random.uniform(low=0, high=100)
         y = np.random.uniform(low=0, high=100)
         z = generateTerrain(x,y)
@@ -109,14 +109,10 @@ def generatesInputTrucks(nb_trucks : int):
     trucks = []
     trucks_cap = []                       #find total truck capacity (trucks cannot do same route twice?)
     for i in range(nb_trucks):
-        # cost of setting the depo
-        F = max(np.random.normal(loc=30, scale=10), 0)
-        Q = 100
-        m = max(np.random.normal(loc=30, scale=10), 10)
-        F_wind = max(np.random.normal(loc=30, scale=10), 10)
-        F_int = max(np.random.normal(loc=30, scale=10), 10)
-        E = max(np.random.normal(loc=30, scale=10), 10)
-        new_truck = Truck(F, Q, m, F_wind, F_int, E, id = i)
+        F = 500
+        Q = 20000
+        m = 5000
+        new_truck = Truck(F, Q, m, id = i)
         trucks_cap.append(new_truck.Q)
         trucks.append(new_truck)
 
@@ -164,7 +160,7 @@ def generateAlphaGamma(depos, customers):
     distance = np.zeros((len(depos) + len(customers), len(depos) + len(customers)))
     nodes = [*depos, *customers]
 
-    E = 73.3 / 1000000 / 1000 # kg co2 per joule
+    E = 7.3e-8 # kg co2 per joule
 
     for idx_i, node_i in enumerate(nodes):
         for idx_j, node_j in enumerate(nodes):

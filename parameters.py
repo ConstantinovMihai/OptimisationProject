@@ -41,7 +41,7 @@ class Customer:
 
 
 class Truck:
-    def __init__(self, F, Q, m, F_wind, F_internal, E, id):
+    def __init__(self, F, Q, m, id):
         """ Constructor of the Truck class
 
         Args:
@@ -56,9 +56,6 @@ class Truck:
         self.F = F
         self.Q = Q
         self.m = m
-        self.F_wind = F_wind
-        self.F_internal = F_internal
-        self.E = E
         self.id = id
 
 
