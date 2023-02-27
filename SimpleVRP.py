@@ -6,7 +6,21 @@ import pickle
 
 
 def VRP_Problem (depots, customers, trucks, nodes, costs, alpha, gamma, distance):
-    
+    """_summary_
+
+    Args:
+        depots (_type_): _description_
+        customers (_type_): _description_
+        trucks (_type_): _description_
+        nodes (_type_): _description_
+        costs (_type_): _description_
+        alpha (_type_): _description_
+        gamma (_type_): _description_
+        distance (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
     model = Model("VRP")                # LP model (this is an object)
     
     x = {} # BV indicating the use of the path between nodes i,j
@@ -170,9 +184,7 @@ def VRP_Problem (depots, customers, trucks, nodes, costs, alpha, gamma, distance
     with open('inp_out.pickle', 'wb') as file:
         pickle.dump(data, file)
           
-    print
-   
-    print
+
     print ("Objective Function =", round(model.ObjVal/1.0, 3))
     print ("------------------------------------------------------------------------")
     
@@ -184,11 +196,7 @@ if __name__ == '__main__':
     # Input excel file with arcs data (sheet1) and commodities data (sheet2)
 
     # I, J
-<<<<<<< Updated upstream
-    depots, customers, trucks = generateInput(2,5)
-=======
     depots, customers, trucks = generateInput(1,10,10)
->>>>>>> Stashed changes
 
     # V
     nodes = [*depots, *customers]
@@ -196,20 +204,11 @@ if __name__ == '__main__':
     costs = generateCostsBetweenNodes(depots, customers)    
     alpha, gamma, distance = generateAlphaGamma(depots, customers)
 
-<<<<<<< Updated upstream
-
-    # for object in nodes:
-    #     print(vars(object))
-    # for object in trucks:
-    #     print(vars(object))
-
-=======
     """ for object in nodes:
         print(vars(object))
     for object in trucks:
         print(vars(object))
  """
->>>>>>> Stashed changes
     #=================================================================================================
     start_time = time()
     
