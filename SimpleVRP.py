@@ -21,6 +21,7 @@ def VRP_Problem (depots, customers, trucks, nodes, costs, alpha, gamma, distance
     Returns:
         _type_: _description_
     """
+
     model = Model("VRP")                # LP model (this is an object)
     
     x = {} # BV indicating the use of the path between nodes i,j
@@ -56,7 +57,7 @@ def VRP_Problem (depots, customers, trucks, nodes, costs, alpha, gamma, distance
     customer_visited = {} # 14 the number of arcs arriving to a customer node must be 1, that is, every customer node is visited by a route.
     for node_j in customers:
         customer_visited[node_j.id] = model.addConstr(quicksum(x[node_i.id,node_j.id] for node_i in nodes),
-                                                     '=', 1, name = f'customer_visited{node_j.id}')
+                                                    '=', 1, name = f'customer_visited{node_j.id}')
 
     flow_conservation = {} # 15 the sum of the arcs of output of a demand is equal to the sum of the input arcs:
     for node_j in customers:
@@ -78,7 +79,7 @@ def VRP_Problem (depots, customers, trucks, nodes, costs, alpha, gamma, distance
     flow_balance = {} # 18 flow balance for node j  in terms of incoming and outgoing flows and demand at node j
     for node_j in customers:
         flow_balance[node_j.id] = model.addConstr(quicksum(t[node_i.id,node_j.id] for node_i in nodes if node_i.id != node_j.id),'=',
-                                                  quicksum(t[node_j.id,node_k.id] for node_k in nodes if node_k.id != node_j.id)+node_j.demand,name=f"flow_balance{node_j.id}")
+                                                quicksum(t[node_j.id,node_k.id] for node_k in nodes if node_k.id != node_j.id)+node_j.demand,name=f"flow_balance{node_j.id}")
 
     cycle_prevention = {} # 19 number of active arcs needed to connect all customer nodes assured that the routes are radials and do not have cycles
     cycle_prevention[0] = model.addConstr(quicksum(quicksum(x[node_i.id,node_j.id] for node_i in nodes) for node_j in nodes), '=', len(customers), name="cycle_prevention")
@@ -134,26 +135,27 @@ def VRP_Problem (depots, customers, trucks, nodes, costs, alpha, gamma, distance
     cient_dem = {} # 30 number of routes is sufficient to attend all clients demand
     cient_dem[0] = model.addConstr(quicksum(quicksum(x[node_i.id,node_j.id] for node_i in depots) for node_j in customers),'>=',quicksum(node_j.demand/trucks[0].Q for node_j in customers),name=f'client_dem')
     
-    model.update()
-
-    # model.setObjectiveN(quicksum(node_i.cost*y[node_i.id] for node_i in depots)+
+    # epsilon_obj = model.addConstr(quicksum(node_i.cost*y[node_i.id] for node_i in depots)+
     #                     quicksum(quicksum(trucks[0].F*a[node_i.id,node_j.id] for node_i in depots) for node_j in customers)+
     #                     quicksum(quicksum(costs[node_i.id,node_j.id]*x[node_i.id,node_j.id] for node_i in nodes) for node_j in nodes)+
-    #                     quicksum(quicksum(costs[node_i.id,node_j.id]*a[node_i.id,node_j.id] for node_i in depots) for node_j in customers), 0, 1)
+    #                     quicksum(quicksum(costs[node_i.id,node_j.id]*a[node_i.id,node_j.id] for node_i in depots) for node_j in customers),'<=',epsilon,name=f'epsilon_constraint')
+
+    model.update()
+
+    model.setObjectiveN(quicksum(node_i.cost*y[node_i.id] for node_i in depots)+
+                        quicksum(quicksum(trucks[0].F*a[node_i.id,node_j.id] for node_i in depots) for node_j in customers)+
+                        quicksum(quicksum(costs[node_i.id,node_j.id]*x[node_i.id,node_j.id] for node_i in nodes) for node_j in nodes)+
+                        quicksum(quicksum(costs[node_i.id,node_j.id]*a[node_i.id,node_j.id] for node_i in depots) for node_j in customers), 0, 1)
 
     model.setObjectiveN(quicksum(quicksum(alpha[node_i.id,node_j.id]*distance[node_i.id,node_j.id]*x[node_i.id,node_j.id] for node_i in nodes) for node_j in nodes) +
                         quicksum(quicksum(alpha[node_i.id,node_j.id]*distance[node_i.id,node_j.id]*a[node_i.id,node_j.id] for node_i in depots) for node_j in customers) +
-                        quicksum(quicksum(gamma[node_i.id,node_j.id]*distance[node_i.id,node_j.id]*t[node_i.id,node_j.id] for node_i in nodes) for node_j in nodes), 0, 1)
-    
-
-
-    # model.setOjbectiveN(quicksum(costs[node_i.id,node_j.id]*x[node_i.id,node_j.id] for l in L for k in stations), 1, 0)
+                        quicksum(quicksum(gamma[node_i.id,node_j.id]*distance[node_i.id,node_j.id]*t[node_i.id,node_j.id] for node_i in nodes) for node_j in nodes),1,2)
 
     model.update()
     model.write("VRP_Model.lp")    
     model.optimize()
     
-   
+
     
     status = model.status
     if status != GRB.Status.OPTIMAL:
@@ -183,20 +185,20 @@ def VRP_Problem (depots, customers, trucks, nodes, costs, alpha, gamma, distance
 
     with open('inp_out.pickle', 'wb') as file:
         pickle.dump(data, file)
-          
+        
 
     print ("Objective Function =", round(model.ObjVal/1.0, 3))
     print ("------------------------------------------------------------------------")
     
     
-    
+        
 
 if __name__ == '__main__':
     #=================================================================================================
     # Input excel file with arcs data (sheet1) and commodities data (sheet2)
 
     # I, J
-    depots, customers, trucks = generateInput(1,10,10)
+    depots, customers, trucks = generateInput(10,10)
 
     # V
     nodes = [*depots, *customers]
