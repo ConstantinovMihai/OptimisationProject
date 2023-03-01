@@ -4,6 +4,7 @@ from time import *
 from generate_input import generateInput, generateCostsBetweenNodes, generateAlphaGamma
 import pickle
 import matplotlib.pyplot as plt
+from datetime import datetime
 
 def Run_Model(solutions, epsilon, first_run):
 
@@ -214,11 +215,15 @@ def VRP_Problem (depots, customers, trucks, nodes, costs, alpha, gamma, distance
 
     min_possible_money_cost = int(solutions[0]['money_objective value'])
 
-    for epsilon in linspace(min_possible_money_cost+1,min_possible_money_cost*10,10):
+    for epsilon in linspace(min_possible_money_cost+1,min_possible_money_cost*10,3):
         print(f"Model with epsilon {epsilon}")
         Run_Model(solutions, epsilon, first_run = False)       
 
     print(solutions)
+
+    time = datetime.now().strftime("%H_%M_%S")
+    with open(f'solutions_{time}.pickle', 'wb') as f:
+        pickle.dump(solutions, f)
 
     obj1 = []
     obj2 = []
@@ -239,7 +244,7 @@ if __name__ == '__main__':
     # Input excel file with arcs data (sheet1) and commodities data (sheet2)
 
     # I, J
-    depots, customers, trucks = generateInput(5,15)
+    depots, customers, trucks = generateInput(1,3)
 
     # V
     nodes = [*depots, *customers]
