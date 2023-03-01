@@ -183,10 +183,10 @@ def Run_Model(solutions, epsilon, first_run):
     # with open('inp_out.pickle', 'wb') as file:
     #     pickle.dump(data, file)
         
-    print(model.getVars()[-1].varName)
+    # print(model.getVars()[-1].varName)
     # print ("Objective Function =", round(model.ObjVal/1.0, 3))
-    print ("------------------------------------------------------------------------")
-    solutions.append({model.getVars()[-1].varName:model.getVars()[-1].x, model.getVars()[-2].varName:model.getVars()[-2].x})
+    # print ("------------------------------------------------------------------------")
+    solutions[dP][epsilon] = {model.getVars()[-1].varName:model.getVars()[-1].x, model.getVars()[-2].varName:model.getVars()[-2].x}
     # solutions.append((epsilon,model.ObjVal,model.getVars()[-1].x))
 
     return solutions
@@ -208,33 +208,18 @@ def VRP_Problem (depots, customers, trucks, nodes, costs, alpha, gamma, distance
     Returns:
         _type_: _description_
     """
-    
-    solutions = []
 
     Run_Model(solutions, epsilon=0, first_run = True)
 
-    min_possible_money_cost = int(solutions[0]['money_objective value'])
+    # print(solutions)
 
-    for epsilon in linspace(min_possible_money_cost+1,min_possible_money_cost*10,3):
-        print(f"Model with epsilon {epsilon}")
+    min_possible_money_cost = int(solutions[dP][0]['money_objective value'])
+
+    for epsilon in linspace(min_possible_money_cost+1,min_possible_money_cost*10,10):
+        # print(f"Model with epsilon {epsilon}")
         Run_Model(solutions, epsilon, first_run = False)       
 
-    print(solutions)
-
-    time = datetime.now().strftime("%H_%M_%S")
-    with open(f'solutions_{time}.pickle', 'wb') as f:
-        pickle.dump(solutions, f)
-
-    obj1 = []
-    obj2 = []
-    for sol in solutions:
-        obj1.append(sol['emis_objective value'])
-        obj2.append(sol['money_objective value'])
-
-    plt.scatter(obj1, obj2)
-    plt.ylabel('money_objective value')
-    plt.xlabel('emis_objective value')
-    plt.show()   
+    
             
         
         
@@ -244,7 +229,7 @@ if __name__ == '__main__':
     # Input excel file with arcs data (sheet1) and commodities data (sheet2)
 
     # I, J
-    depots, customers, trucks = generateInput(1,3)
+    depots, customers, trucks = generateInput(3,10)
 
     # V
     nodes = [*depots, *customers]
@@ -259,10 +244,43 @@ if __name__ == '__main__':
     """
     #=================================================================================================
     start_time = time()
-    
-    VRP_Problem(depots, customers, trucks, nodes, costs, alpha, gamma, distance)
+
+    solutions = {}
+    # iterate among the amount of change to be applied
+    for dP in [0.95, 1, 1.05]:
+        # change the values of the depots
+        for depot in depots:
+            depot.cost = dP * depot.cost
+        
+        solutions[dP] = {}
+
+        # run the model
+        VRP_Problem(depots, customers, trucks, nodes, costs, alpha, gamma, distance)
+
+        # undo the changes in the values of the depots
+        for depot in depots:
+            depot.cost = depot.cost / dP
     
     elapsed_time = time() - start_time
+
+    time = datetime.now().strftime("%H_%M_%S")
+    with open(f'solutions/solutions_depotcost_{time}.pickle', 'wb') as f:
+        pickle.dump(solutions, f)
+    
+    for dP in solutions:
+        obj1 = []
+        obj2 = []
+        for sol in solutions[dP].items():
+            obj1.append(sol[1]['emis_objective value'])
+            obj2.append(sol[1]['money_objective value'])
+        plt.scatter(obj2, obj1)
+        plt.plot(obj2, obj1)
+    
+    plt.xlabel('money_objective value')
+    plt.ylabel('emis_objective value')
+    plt.savefig("solutions/depotcost")
+    plt.show()
+    
 
     print ("Run Time = ", round(elapsed_time, 4), '[s]')
     print ("END")
