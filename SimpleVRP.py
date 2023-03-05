@@ -221,8 +221,8 @@ def VRP_Problem (depots, customers, trucks, nodes, costs, alpha, gamma, distance
 
     
 def saveResults(solutions, name_param, start_time):
-
-    elapsed_time = time() - start_time
+    plt.clf()
+    # elapsed_time = time() - start_time
 
     time = datetime.now().strftime("%H_%M_%S")
     with open(f'solutions/solutions_{name_param}{time}.pickle', 'wb') as f:
@@ -240,10 +240,10 @@ def saveResults(solutions, name_param, start_time):
     plt.xlabel('money_objective value')
     plt.ylabel('emis_objective value')
     plt.savefig(f"solutions/{name_param}")
-    plt.show()
+    # plt.show()
     
 
-    print ("Run Time = ", round(elapsed_time, 4), '[s]')
+    # print ("Run Time = ", round(elapsed_time, 4), '[s]')
     print ("END")
 
         
@@ -254,7 +254,7 @@ if __name__ == '__main__':
     # Input excel file with arcs data (sheet1) and commodities data (sheet2)
 
     # I, J
-    depots, customers, trucks = generateInput(3,10)
+    depots, customers, trucks = generateInput(5,25)
 
     # V
     nodes = [*depots, *customers]
@@ -268,27 +268,7 @@ if __name__ == '__main__':
         print(vars(object))
     """
     #=================================================================================================
-    start_time = time()
 
-    solutions = {}
-    # iterate among the amount of change to be applied
-    for dP in [0.95, 1, 1.05]:
-        # change the values of the depots
-        solutions[dP] = {}
-        
-        for depot in depots:
-            depot.cost = dP * depot.cost
-
-        # run the model
-        VRP_Problem(depots, customers, trucks, nodes, costs, alpha, gamma, distance)
-
-        # undo the changes in the values of the depots
-        for depot in depots:
-            depot.cost = depot.cost / dP
-    
-    saveResults(solutions, "depots_cost", start_time)
-
-      #=================================================================================================
     start_time = time()
 
     solutions = {}
@@ -351,6 +331,28 @@ if __name__ == '__main__':
     
     saveResults(solutions, "truck_capacity", start_time)
       #=================================================================================================
+    
+    start_time = time()
+
+    solutions = {}
+        # iterate among the amount of change to be applied
+    for dP in [0.95, 1, 1.05]:
+        # change the values of the depots
+        solutions[dP] = {}
+        
+        for truck in trucks:
+           truck.F = dP *  truck.F
+
+        # run the model
+        VRP_Problem(depots, customers, trucks, nodes, costs, alpha, gamma, distance)
+
+        # undo the changes in the values of the depots
+          
+        for truck in trucks:
+           truck.F = truck.F / dP
+    
+    saveResults(solutions, "truck_cost", start_time)
+      #=================================================================================================
     start_time = time()
 
     solutions = {}
@@ -391,7 +393,7 @@ if __name__ == '__main__':
             for y in x:
                 y = y / dP
     
-    saveResults(solutions, "depots_cost", start_time)
+    saveResults(solutions, "distance", start_time)
       #=================================================================================================
     start_time = time()
 
@@ -421,6 +423,33 @@ if __name__ == '__main__':
             for y in x:
                 y = y / dP
 
-    saveResults(solutions, "depots_cost", start_time)
+    saveResults(solutions, "alpha_beta", start_time)
+      #=================================================================================================
+
+    start_time = time()
+
+    solutions = {}
+    # iterate among the amount of change to be applied
+    for dP in [0.95, 1, 1.05]:
+        # change the values of the depots
+        solutions[dP] = {}
+        
+        for x in costs:
+            for y in x:
+                y = y * dP
+
+       
+
+        # run the model
+        VRP_Problem(depots, customers, trucks, nodes, costs, alpha, gamma, distance)
+
+        # undo the changes in the values of the depots
+        for x in costs:
+            for y in x:
+                y = y / dP
+
+     
+
+    saveResults(solutions, "route_costs", start_time)
       #=================================================================================================
 
