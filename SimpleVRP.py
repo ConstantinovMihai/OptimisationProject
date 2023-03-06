@@ -256,7 +256,7 @@ if __name__ == '__main__':
     # Input excel file with arcs data (sheet1) and commodities data (sheet2)
 
     # I, J
-    depots, customers, trucks = generateInput(5,25)
+    depots, customers, trucks = generateInput(3,9)
 
     # V
     nodes = [*depots, *customers]
@@ -383,17 +383,17 @@ if __name__ == '__main__':
         # change the values of the depots
         solutions[dP] = {}
         
-        for x in distance:
-            for y in x:
-                y = dP * y
+        for x in range(len(distance)):
+            for y in range(len(distance[x])):
+                distance[x][y] = dP * distance[x][y]
 
         # run the model
         VRP_Problem(depots, customers, trucks, nodes, costs, alpha, gamma, distance)
 
         # undo the changes in the values of the depots
-        for x in distance:
-            for y in x:
-                y = y / dP
+        for x in range(len(distance)):
+            for y in range(len(distance[x])):
+                distance[x][y] =  distance[x][y]/dP
     
     saveResults(solutions, "distance", start_time)
       #=================================================================================================
@@ -405,25 +405,25 @@ if __name__ == '__main__':
         # change the values of the depots
         solutions[dP] = {}
         
-        for x in alpha:
-            for y in x:
-                y = y * dP
+        for x in range(len(alpha)):
+            for y in range(len(alpha[x])):
+                alpha[x][y] = dP * alpha[x][y]
 
-        for x in gamma:
-            for y in x:
-                y = y * dP
+        for x in range(len(gamma)):
+            for y in range(len(gamma[x])):
+                gamma[x][y] = dP * gamma[x][y]
 
         # run the model
         VRP_Problem(depots, customers, trucks, nodes, costs, alpha, gamma, distance)
 
         # undo the changes in the values of the depots
-        for x in alpha:
-            for y in x:
-                y = y / dP
+        for x in range(len(alpha)):
+            for y in range(len(alpha[x])):
+                alpha[x][y] =  alpha[x][y]/dP
 
-        for x in gamma:
-            for y in x:
-                y = y / dP
+        for x in range(len(gamma)):
+            for y in range(len(gamma[x])):
+                gamma[x][y] = gamma[x][y]/dP
 
     saveResults(solutions, "alpha_beta", start_time)
       #=================================================================================================
@@ -436,9 +436,9 @@ if __name__ == '__main__':
         # change the values of the depots
         solutions[dP] = {}
         
-        for x in costs:
-            for y in x:
-                y = y * dP
+        for x in range(len(costs)):
+            for y in range(len(costs[x])):
+                costs[x][y] = dP * costs[x][y]
 
        
 
@@ -446,9 +446,9 @@ if __name__ == '__main__':
         VRP_Problem(depots, customers, trucks, nodes, costs, alpha, gamma, distance)
 
         # undo the changes in the values of the depots
-        for x in costs:
-            for y in x:
-                y = y / dP
+        for x in range(len(costs)):
+            for y in range(len(costs[x])):
+                costs[x][y] = costs[x][y]/dP
 
      
 
