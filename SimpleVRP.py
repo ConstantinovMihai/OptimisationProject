@@ -219,34 +219,36 @@ def VRP_Problem (depots, customers, trucks, nodes, costs, alpha, gamma, distance
         # print(f"Model with epsilon {epsilon}")
         Run_Model(solutions, epsilon, first_run = False)       
 
-    
-def saveResults(solutions, name_param, start_time):
-    plt.clf()
-    # elapsed_time = time() - start_time
 
-    time = datetime.now().strftime("%H_%M_%S")
-    with open(f'solutions/solutions_{name_param}{time}.pickle', 'wb') as f:
-        pickle.dump(solutions, f)
-    
-    for dP in solutions:
+def plotSolution(solutions, name_param):
+    plt.clf()
+    for dP in reversed(solutions):
         obj1 = []
         obj2 = []
         for sol in solutions[dP].items():
             obj1.append(sol[1]['emis_objective value'])
             obj2.append(sol[1]['money_objective value'])
         plt.scatter(obj2, obj1)
-        plt.plot(obj2, obj1)
-    
-    plt.xlabel('money_objective value')
-    plt.ylabel('emis_objective value')
+        plt.plot(obj2, obj1, label=f"{dP} X {name_param}")
+    plt.legend()
+    plt.grid()
+    plt.xlabel(r'Money objective $\Psi_1$ value (\$)')
+    plt.ylabel(r'Emission objective $\Psi_2$ value ($kg$ $C02$)')
     plt.savefig(f"solutions/{name_param}")
-    # plt.show()
-    
 
-    # print ("Run Time = ", round(elapsed_time, 4), '[s]')
+    
+def saveResults(solutions, name_param, start_time):
+   
+    # elapsed_time = time() - start_time
+
+    time = datetime.now().strftime("%H_%M_%S")
+    with open(f'solutions/solutions_{name_param}{time}.pickle', 'wb') as f:
+        pickle.dump(solutions, f)
+    
+    saveResults(solutions, name_param)
+
     print ("END")
 
-        
         
 
 if __name__ == '__main__':
