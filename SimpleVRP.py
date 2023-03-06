@@ -170,22 +170,7 @@ def Run_Model(solutions, epsilon, first_run):
             print('Optimization was stopped with status %d' % status)
         exit(0)
 
-    # vars = {}
-    # for v in model.getVars():
-    #     vars[v.varName] = v.x
-    #     if v.x > 0:
-    #         print('%s %g' % (v.varName, v.x))
-
-    # model.write("VRP_model.sol")
-
-    # data = (vars, depots, customers, trucks, nodes, costs)
-
-    # with open('inp_out.pickle', 'wb') as file:
-    #     pickle.dump(data, file)
-        
-    # print(model.getVars()[-1].varName)
-    # print ("Objective Function =", round(model.ObjVal/1.0, 3))
-    # print ("------------------------------------------------------------------------")
+   
     solutions[dP][epsilon] = {model.getVars()[-1].varName:model.getVars()[-1].x, model.getVars()[-2].varName:model.getVars()[-2].x}
     # solutions.append((epsilon,model.ObjVal,model.getVars()[-1].x))
 
