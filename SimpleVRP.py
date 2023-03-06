@@ -181,17 +181,14 @@ def VRP_Problem (depots, customers, trucks, nodes, costs, alpha, gamma, distance
     """_summary_
 
     Args:
-        depots (_type_): _description_
-        customers (_type_): _description_
-        trucks (_type_): _description_
-        nodes (_type_): _description_
-        costs (_type_): _description_
-        alpha (_type_): _description_
-        gamma (_type_): _description_
-        distance (_type_): _description_
-
-    Returns:
-        _type_: _description_
+        depots (list): list of depot objects which contain the parameters relevant to each depot
+        customers (list): list of customer objects which contain the parameters relevant to each customer
+        trucks (list): list of truck objects which contain the parameters relevant to each truck
+        nodes (list): list containing depots + customers 
+        costs (list): matrix containing costs between all nodes
+        alpha (list): matrix containing alpha between all nodes
+        gamma (list): matrix containing gamma between all nodes
+        distance (list): matrix containing distance between all nodes
     """
 
     Run_Model(solutions, epsilon=0, first_run = True)
