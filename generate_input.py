@@ -57,7 +57,7 @@ def generatesInputDepos(nb_depots : int, id_list : np.array):
     depos_cap = []
     for i in range(nb_depots):
         # cost of setting the depo
-        Oi = max(np.random.normal(loc=8000, scale=1000), 0)
+        Oi = max(np.random.normal(loc=1500, scale=100), 0)
         Wi = max(np.random.normal(loc=20000*5, scale=10000), 0)
         x = np.random.uniform(low=0, high=100)
         y = np.random.uniform(low=0, high=100)
@@ -109,7 +109,7 @@ def generatesInputTrucks(nb_trucks : int):
     trucks = []
     trucks_cap = []                       #find total truck capacity (trucks cannot do same route twice?)
     for i in range(nb_trucks):
-        F = 500
+        F = 100
         Q = 20000
         m = 5000
         new_truck = Truck(F, Q, m, id = i)
