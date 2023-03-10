@@ -219,7 +219,7 @@ def plotSolution(solutions, name_param):
     plt.savefig(f"solutions/{name_param}")
 
     
-def saveResults(solutions, name_param, start_time):
+def saveResults(solutions, name_param):
    
     # elapsed_time = time() - start_time
 
@@ -227,7 +227,7 @@ def saveResults(solutions, name_param, start_time):
     with open(f'solutions/solutions_{name_param}{time}.pickle', 'wb') as f:
         pickle.dump(solutions, f)
     
-    saveResults(solutions, name_param)
+    plotSolution(solutions, name_param)
 
     print ("END")
 
@@ -238,7 +238,7 @@ if __name__ == '__main__':
     # Input excel file with arcs data (sheet1) and commodities data (sheet2)
 
     # I, J
-    depots, customers, trucks = generateInput(3,9)
+    depots, customers, trucks = generateInput(2,5)
 
     # V
     nodes = [*depots, *customers]
@@ -271,7 +271,7 @@ if __name__ == '__main__':
         for depot in depots:
             depot.cost = depot.cost / dP
     
-    saveResults(solutions, "depots_cost", start_time)
+    saveResults(solutions, "depots_cost")
       #=================================================================================================
     start_time = time()
 
@@ -291,7 +291,7 @@ if __name__ == '__main__':
         for depot in depots:
             depot.cap = depot.cap / dP
     
-    saveResults(solutions, "depots_capacity", start_time)
+    saveResults(solutions, "depots_capacity")
 
       #=================================================================================================
     start_time = time()
@@ -313,7 +313,7 @@ if __name__ == '__main__':
         for truck in trucks:
            truck.Q = truck.Q / dP
     
-    saveResults(solutions, "truck_capacity", start_time)
+    saveResults(solutions, "truck_capacity")
       #=================================================================================================
     
     start_time = time()
@@ -335,7 +335,7 @@ if __name__ == '__main__':
         for truck in trucks:
            truck.F = truck.F / dP
     
-    saveResults(solutions, "truck_cost", start_time)
+    saveResults(solutions, "truck_cost")
       #=================================================================================================
     start_time = time()
 
@@ -355,7 +355,7 @@ if __name__ == '__main__':
         for customer in customers:
             customer.demand = customer.demand / dP
     
-    saveResults(solutions, "customer_demand", start_time)
+    saveResults(solutions, "customer_demand")
       #=================================================================================================
     start_time = time()
 
@@ -377,7 +377,7 @@ if __name__ == '__main__':
             for y in range(len(distance[x])):
                 distance[x][y] =  distance[x][y]/dP
     
-    saveResults(solutions, "distance", start_time)
+    saveResults(solutions, "distance")
       #=================================================================================================
     start_time = time()
 
@@ -407,7 +407,7 @@ if __name__ == '__main__':
             for y in range(len(gamma[x])):
                 gamma[x][y] = gamma[x][y]/dP
 
-    saveResults(solutions, "alpha_beta", start_time)
+    saveResults(solutions, "alpha_beta")
       #=================================================================================================
 
     start_time = time()
@@ -434,6 +434,6 @@ if __name__ == '__main__':
 
      
 
-    saveResults(solutions, "route_costs", start_time)
+    saveResults(solutions, "route_costs")
       #=================================================================================================
 
