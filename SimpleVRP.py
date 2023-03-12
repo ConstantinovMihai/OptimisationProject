@@ -151,7 +151,7 @@ def Run_Model(solutions, epsilon, first_run):
                             quicksum(quicksum(gamma[node_i.id,node_j.id]*distance[node_i.id,node_j.id]*t[node_i.id,node_j.id] for node_i in nodes) for node_j in nodes))
 
     model.update()
-    model.setParam('MIPGap', 0.01)
+    model.setParam('MIPGap', 0.05 )
     model.optimize()
 
     status = model.status
@@ -216,7 +216,7 @@ def plotSolution(solutions, name_param):
     plt.grid()
     plt.xlabel(r'Money objective $\Psi_1$ value (\$)')
     plt.ylabel(r'Emission objective $\Psi_2$ value ($kg$ $C02$)')
-    plt.savefig(f"solutions/{name_param}")
+    plt.savefig(f"solutions/{name_param}10,50")
 
     
 def saveResults(solutions, name_param):
@@ -224,7 +224,7 @@ def saveResults(solutions, name_param):
     # elapsed_time = time() - start_time
 
     time = datetime.now().strftime("%H_%M_%S")
-    with open(f'solutions/solutions_{name_param}{time}.pickle', 'wb') as f:
+    with open(f'solutions/solutions_{name_param}{time}10,50.pickle', 'wb') as f:
         pickle.dump(solutions, f)
     
     plotSolution(solutions, name_param)
@@ -238,7 +238,7 @@ if __name__ == '__main__':
     # Input excel file with arcs data (sheet1) and commodities data (sheet2)
 
     # I, J
-    depots, customers, trucks = generateInput(2,5)
+    depots, customers, trucks = generateInput(10,50)
 
     # V
     nodes = [*depots, *customers]
@@ -255,108 +255,108 @@ if __name__ == '__main__':
 
     start_time = time()
 
-    solutions = {}
-    # iterate among the amount of change to be applied
-    for dP in [0.95, 1, 1.05]:
-        # change the values of the depots
-        solutions[dP] = {}
+    # solutions = {}
+    # # iterate among the amount of change to be applied
+    # for dP in [0.95, 1, 1.05]:
+    #     # change the values of the depots
+    #     solutions[dP] = {}
         
-        for depot in depots:
-            depot.cost = dP * depot.cost
+    #     for depot in depots:
+    #         depot.cost = dP * depot.cost
 
-        # run the model
-        VRP_Problem(depots, customers, trucks, nodes, costs, alpha, gamma, distance)
+    #     # run the model
+    #     VRP_Problem(depots, customers, trucks, nodes, costs, alpha, gamma, distance)
 
-        # undo the changes in the values of the depots
-        for depot in depots:
-            depot.cost = depot.cost / dP
+    #     # undo the changes in the values of the depots
+    #     for depot in depots:
+    #         depot.cost = depot.cost / dP
     
-    saveResults(solutions, "depots_cost")
-      #=================================================================================================
-    start_time = time()
+    # saveResults(solutions, "depots_cost")
+    #   #=================================================================================================
+    # start_time = time()
 
-    solutions = {}
-    # iterate among the amount of change to be applied
-    for dP in [0.95, 1, 1.05]:
-        # change the values of the depots
-        solutions[dP] = {}
+    # solutions = {}
+    # # iterate among the amount of change to be applied
+    # for dP in [0.95, 1, 1.05]:
+    #     # change the values of the depots
+    #     solutions[dP] = {}
         
-        for depot in depots:
-            depot.cap = dP * depot.cap
+    #     for depot in depots:
+    #         depot.cap = dP * depot.cap
 
-        # run the model
-        VRP_Problem(depots, customers, trucks, nodes, costs, alpha, gamma, distance)
+    #     # run the model
+    #     VRP_Problem(depots, customers, trucks, nodes, costs, alpha, gamma, distance)
 
-        # undo the changes in the values of the depots
-        for depot in depots:
-            depot.cap = depot.cap / dP
+    #     # undo the changes in the values of the depots
+    #     for depot in depots:
+    #         depot.cap = depot.cap / dP
     
-    saveResults(solutions, "depots_capacity")
+    # saveResults(solutions, "depots_capacity")
 
-      #=================================================================================================
-    start_time = time()
+    #   #=================================================================================================
+    # start_time = time()
 
-    solutions = {}
-    # iterate among the amount of change to be applied
-    for dP in [0.95, 1, 1.05]:
-        # change the values of the depots
-        solutions[dP] = {}
+    # solutions = {}
+    # # iterate among the amount of change to be applied
+    # for dP in [0.95, 1, 1.05]:
+    #     # change the values of the depots
+    #     solutions[dP] = {}
         
-        for truck in trucks:
-           truck.Q = dP *  truck.Q
+    #     for truck in trucks:
+    #        truck.Q = dP *  truck.Q
 
-        # run the model
-        VRP_Problem(depots, customers, trucks, nodes, costs, alpha, gamma, distance)
+    #     # run the model
+    #     VRP_Problem(depots, customers, trucks, nodes, costs, alpha, gamma, distance)
 
-        # undo the changes in the values of the depots
+    #     # undo the changes in the values of the depots
           
-        for truck in trucks:
-           truck.Q = truck.Q / dP
+    #     for truck in trucks:
+    #        truck.Q = truck.Q / dP
     
-    saveResults(solutions, "truck_capacity")
-      #=================================================================================================
+    # saveResults(solutions, "truck_capacity")
+    #   #=================================================================================================
     
-    start_time = time()
+    # start_time = time()
 
-    solutions = {}
-        # iterate among the amount of change to be applied
-    for dP in [0.95, 1, 1.05]:
-        # change the values of the depots
-        solutions[dP] = {}
+    # solutions = {}
+    #     # iterate among the amount of change to be applied
+    # for dP in [0.95, 1, 1.05]:
+    #     # change the values of the depots
+    #     solutions[dP] = {}
         
-        for truck in trucks:
-           truck.F = dP *  truck.F
+    #     for truck in trucks:
+    #        truck.F = dP *  truck.F
 
-        # run the model
-        VRP_Problem(depots, customers, trucks, nodes, costs, alpha, gamma, distance)
+    #     # run the model
+    #     VRP_Problem(depots, customers, trucks, nodes, costs, alpha, gamma, distance)
 
-        # undo the changes in the values of the depots
+    #     # undo the changes in the values of the depots
           
-        for truck in trucks:
-           truck.F = truck.F / dP
+    #     for truck in trucks:
+    #        truck.F = truck.F / dP
     
-    saveResults(solutions, "truck_cost")
-      #=================================================================================================
-    start_time = time()
+    # saveResults(solutions, "truck_cost")
+    #   #=================================================================================================
+    # start_time = time()
 
-    solutions = {}
-    # iterate among the amount of change to be applied
-    for dP in [0.95, 1, 1.05]:
-        # change the values of the depots
-        solutions[dP] = {}
+    # solutions = {}
+    # # iterate among the amount of change to be applied
+    # for dP in [0.95, 1, 1.05]:
+    #     # change the values of the depots
+    #     solutions[dP] = {}
         
-        for customer in customers:
-            customer.demand = dP * customer.demand
+    #     for customer in customers:
+    #         customer.demand = dP * customer.demand
 
-        # run the model
-        VRP_Problem(depots, customers, trucks, nodes, costs, alpha, gamma, distance)
+    #     # run the model
+    #     VRP_Problem(depots, customers, trucks, nodes, costs, alpha, gamma, distance)
 
-        # undo the changes in the values of the depots
-        for customer in customers:
-            customer.demand = customer.demand / dP
+    #     # undo the changes in the values of the depots
+    #     for customer in customers:
+    #         customer.demand = customer.demand / dP
     
-    saveResults(solutions, "customer_demand")
-      #=================================================================================================
+    # saveResults(solutions, "customer_demand")
+    #   #=================================================================================================
     start_time = time()
 
     solutions = {}
@@ -379,36 +379,36 @@ if __name__ == '__main__':
     
     saveResults(solutions, "distance")
       #=================================================================================================
-    start_time = time()
+    # start_time = time()
 
-    solutions = {}
-    # iterate among the amount of change to be applied
-    for dP in [0.95, 1, 1.05]:
-        # change the values of the depots
-        solutions[dP] = {}
+    # solutions = {}
+    # # iterate among the amount of change to be applied
+    # for dP in [0.95, 1, 1.05]:
+    #     # change the values of the depots
+    #     solutions[dP] = {}
         
-        for x in range(len(alpha)):
-            for y in range(len(alpha[x])):
-                alpha[x][y] = dP * alpha[x][y]
+    #     for x in range(len(alpha)):
+    #         for y in range(len(alpha[x])):
+    #             alpha[x][y] = dP * alpha[x][y]
 
-        for x in range(len(gamma)):
-            for y in range(len(gamma[x])):
-                gamma[x][y] = dP * gamma[x][y]
+    #     for x in range(len(gamma)):
+    #         for y in range(len(gamma[x])):
+    #             gamma[x][y] = dP * gamma[x][y]
 
-        # run the model
-        VRP_Problem(depots, customers, trucks, nodes, costs, alpha, gamma, distance)
+    #     # run the model
+    #     VRP_Problem(depots, customers, trucks, nodes, costs, alpha, gamma, distance)
 
-        # undo the changes in the values of the depots
-        for x in range(len(alpha)):
-            for y in range(len(alpha[x])):
-                alpha[x][y] =  alpha[x][y]/dP
+    #     # undo the changes in the values of the depots
+    #     for x in range(len(alpha)):
+    #         for y in range(len(alpha[x])):
+    #             alpha[x][y] =  alpha[x][y]/dP
 
-        for x in range(len(gamma)):
-            for y in range(len(gamma[x])):
-                gamma[x][y] = gamma[x][y]/dP
+    #     for x in range(len(gamma)):
+    #         for y in range(len(gamma[x])):
+    #             gamma[x][y] = gamma[x][y]/dP
 
-    saveResults(solutions, "alpha_beta")
-      #=================================================================================================
+    # saveResults(solutions, "alpha_beta")
+    #   #=================================================================================================
 
     start_time = time()
 
@@ -435,5 +435,5 @@ if __name__ == '__main__':
      
 
     saveResults(solutions, "route_costs")
-      #=================================================================================================
+    #   #=================================================================================================
 
